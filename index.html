@@ -9,9 +9,9 @@
   <!-- LOGIN -->
   <div id="loginBox">
     <h2>Login</h2>
-    <input id="loginUser" placeholder="Username">
-    <input id="loginPass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button id="loginBtn">Login / Signup</button>
     <p onclick="showSignup()">Create account</p>
   </div>
 
@@ -30,10 +30,11 @@
     <h1>Welcome to SayFlix</h1>
 
     <!-- UPLOAD (ONLY JOHN) -->
-    <div id="uploadBox" style="display:none;">
+    <div id="uploadSection" style="display:none;">
       <h2>Upload Movie</h2>
-      <input placeholder="Movie title">
-      <button>Upload</button>
+      <input type="text" id="videoTitle" placeholder="Movie title">
+      <button id="uploadBtn">Upload</button>
+      <div id="videoList"></div>
     </div>
 
     <button onclick="logout()">Logout</button>
