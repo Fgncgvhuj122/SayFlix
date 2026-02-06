@@ -1,51 +1,81 @@
-function showSignup() {
-  loginBox.style.display = "none";
-  signupBox.style.display = "block";
-}
-
-function showLogin() {
-  signupBox.style.display = "none";
-  loginBox.style.display = "block";
-}
-
-function signup() {
-  const user = signupUser.value;
-  const pass = signupPass.value;
-  const confirm = signupConfirm.value;
-
-  if (!user || !pass) {
-    alert("Fill all fields");
-    return;
+// On page load, check if someone is logged in
+window.onload = () => {
+  let loggedInUser = localStorage.getItem("loggedInUser");
+  if (loggedInUser) {
+    showMain(loggedInUser);
+    loadVideos();
   }
+};
 
-  if (pass !== confirm) {
-    alert("Passwords do not match");
-    return;
-  }
+// Login button
+document.getElementById("loginBtn").onclick = () => {
+  let username = document.getElementById("username").value.trim();
+  let password = document.getElementById("password").value.trim();
+  if (!username || !password) return alert("Enter username and password");
 
-  localStorage.setItem("user_" + user, pass);
-  alert("Account created!");
-  showLogin();
-}
+  localStorage.setItem("loggedInUser", username);
+  showMain(username);
+  loadVideos();
+};
 
-function login() {
-  const user = loginUser.value;
-  const pass = loginPass.value;
+// Show main box and upload section if John
+function showMain(username) {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("signupBox").style.display = "none";
+  document.getElementById("mainBox").style.display = "block";
 
-  const savedPass = localStorage.getItem("user_" + user);
-
-  if (savedPass === pass) {
-    loginBox.style.display = "none";
-    mainBox.style.display = "block";
-
-    if (user === "John") {
-      uploadBox.style.display = "block";
-    }
-  } else {
-    alert("Wrong username or password");
+  if (username === "John") {
+    document.getElementById("uploadSection").style.display = "block";
   }
 }
 
+// Upload button
+document.getElementById("uploadBtn").onclick = () => {
+  let title = document.getElementById("videoTitle").value.trim();
+  if (!title) return alert("Enter a movie title");
+
+  let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+  videos.push({ title, uploadedBy: "John" });
+  localStorage.setItem("videos", JSON.stringify(videos));
+
+  document.getElementById("videoTitle").value = "";
+  loadVideos();
+};
+
+// Load videos on page
+function loadVideos() {
+  let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+  let container = document.getElementById("videoList");
+  container.innerHTML = "";
+  videos.forEach(v => {
+    let div = document.createElement("div");
+    div.textContent = `${v.title} (by ${v.uploadedBy})`;
+    container.appendChild(div);
+  });
+}
+
+// Logout
 function logout() {
-  location.reload();
+  localStorage.removeItem("loggedInUser");
+  document.getElementById("mainBox").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+}
+
+// Show signup/login
+function showSignup() {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("signupBox").style.display = "block";
+}
+function showLogin() {
+  document.getElementById("signupBox").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+}
+function signup() {
+  let user = document.getElementById("signupUser").value.trim();
+  let pass = document.getElementById("signupPass").value.trim();
+  let confirm = document.getElementById("signupConfirm").value.trim();
+  if (!user || !pass || !confirm) return alert("Fill all fields");
+  if (pass !== confirm) return alert("Passwords do not match");
+  alert("Account created! You can now log in.");
+  showLogin();
 }
